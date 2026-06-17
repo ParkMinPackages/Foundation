@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 34d9f4d3a1ed1b44cab8932a1f9b0868
+labels:
+- ScriptIcon
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
