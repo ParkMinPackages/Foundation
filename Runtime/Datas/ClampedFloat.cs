@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace JCMediLab.Datas
+namespace com.mutant.expansion.Datas
 {
 	[System.Serializable]
 	public struct ClampedFloat
