@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using com.mutant.expansion;
 
-namespace com.mutant.ugui
+namespace com.mutant.expansion
 {
 	public abstract class TreeNode<T> : ExtendedBehaviour where T : TreeNode<T>
 	{

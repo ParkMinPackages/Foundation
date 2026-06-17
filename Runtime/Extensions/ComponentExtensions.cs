@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace JCMediLab.Extensions
+namespace com.mutant.expansion.Extensions
 {
 	public static class ComponentExtensions
 	{
