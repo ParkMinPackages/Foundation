@@ -1,3 +1,4 @@
+#if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEditor.Build;
@@ -68,3 +69,4 @@ namespace com.mutant.expansion.Editor
 		#endregion - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	}
 }
+#endif
