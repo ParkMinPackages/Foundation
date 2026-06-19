@@ -1,45 +1,32 @@
-﻿using System;
-using System.ComponentModel;
-using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using System.ComponentModel;
 
 namespace com.mutant.expansion
 {
-	public abstract class Binder<T> : ExtendedBehaviour where T : INotifyPropertyChanged
+	public class Binder<T> : ExtendedBehaviour where T : class, INotifyPropertyChanged
 	{
-		//Statics-------------------------------------------------------------------------------------------
-		public static void BindTo(GameObject gameObject, in T value) {
-			foreach (Binder<T> binder in gameObject.GetComponentsInChildren<Binder<T>>(true)) {
-				binder.Bind(value);
-			}
-		}
-		//Public Methods-------------------------------------------------------------------------------------------
-		public void Bind(T value) {
-			_value = value;
-
-			if (_value != null) {
-				_bindDisposable?.Dispose();
-				_bindDisposable = SetupBinding(value);
-			}
-			else {
-				_bindDisposable?.Dispose();
-				SetupUnBinding();
-			}
-		}
-		//Public Properties----------------------------------------------------------------------------------------
-		public T Value
+		public void Bind(T value)
 		{
-			get { return _value; }
+			_current = value;
+
+			foreach (Binding<T> binding in gameObject.GetComponentsInChildren<Binding<T>>(true))
+			{
+				binding.Bind(value);
+			}
 		}
-		//Handlers-------------------------------------------------------------------------------------------------
-		protected abstract IDisposable SetupBinding(T value);
-		protected abstract void SetupUnBinding();
-		protected override void OnDestroy() {
-			base.OnDestroy();
-			_bindDisposable?.Dispose();
+
+		public void Unbind()
+		{
+			_current = default;
+
+			foreach (Binding<T> binding in gameObject.GetComponentsInChildren<Binding<T>>(true))
+			{
+				binding.Unbind();
+			}
 		}
-		//Internals---------------------------------------------------------------------------------------
-		[ShowInInspector, Sirenix.OdinInspector.ReadOnly] protected T _value;
-		IDisposable _bindDisposable;
+
+		public T Current => _current;
+		public bool IsBound => _current != null;
+
+		T _current;
 	}
 }

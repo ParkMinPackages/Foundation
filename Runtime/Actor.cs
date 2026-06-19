@@ -11,14 +11,14 @@ namespace com.mutant.expansion
 {
 	[DisallowMultipleComponent]
 	[DefaultExecutionOrder(-10)]
-	public class RootObject : ExtendedBehaviour
+	public class Actor : ExtendedBehaviour
 	{
 		// ===================== Static storages =====================
 		// 타입(구체/부모/인터페이스) -> 인스턴스 집합
-		static readonly Dictionary<Type, HashSet<RootObject>> _cacheDic = new Dictionary<Type, HashSet<RootObject>>();
+		static readonly Dictionary<Type, HashSet<Actor>> _cacheDic = new Dictionary<Type, HashSet<Actor>>();
 
 		// 스폰 알림 이벤트
-		static readonly Dictionary<Type, UnityEvent<RootObject>> _eventDic = new Dictionary<Type, UnityEvent<RootObject>>();
+		static readonly Dictionary<Type, UnityEvent<Actor>> _eventDic = new Dictionary<Type, UnityEvent<Actor>>();
 		static readonly Dictionary<Type, int> _eventSubscriberCountDic = new Dictionary<Type, int>();
 
 		//역인덱스
@@ -47,7 +47,7 @@ namespace com.mutant.expansion
 				}
 
 				// RootObject 까지만 포함하고 종료
-				if (current == typeof(RootObject)) {
+				if (current == typeof(Actor)) {
 					break;
 				}
 
@@ -72,7 +72,7 @@ namespace com.mutant.expansion
 		}
 
 		static void InitScene(Scene scene, LoadSceneMode mode) {
-			List<RootObject> list = ListPool<RootObject>.Get();
+			List<Actor> list = ListPool<Actor>.Get();
 			try {
 				GameObject[] roots = scene.GetRootGameObjects();
 				for (int i = 0; i < roots.Length; i++) {
@@ -83,7 +83,7 @@ namespace com.mutant.expansion
 			}
 			finally {
 				list.Clear();
-				ListPool<RootObject>.Release(list);
+				ListPool<Actor>.Release(list);
 			}
 		}
 
@@ -93,9 +93,9 @@ namespace com.mutant.expansion
 
 			Type type = typeof(T);
 
-			UnityEvent<RootObject> evt;
+			UnityEvent<Actor> evt;
 			if (_eventDic.TryGetValue(type, out evt) == false || evt == null) {
-				evt = new UnityEvent<RootObject>();
+				evt = new UnityEvent<Actor>();
 				_eventDic[type] = evt;
 			}
 
@@ -138,9 +138,9 @@ namespace com.mutant.expansion
 		}
 
 		public static T Get<T>() where T : class {
-			HashSet<RootObject> set;
+			HashSet<Actor> set;
 			if (_cacheDic.TryGetValue(typeof(T), out set) && set != null && set.Count > 0) {
-				foreach (RootObject r in set) {
+				foreach (Actor r in set) {
 					T casted = r as T;
 					if (casted != null) return casted;
 				}
@@ -149,9 +149,9 @@ namespace com.mutant.expansion
 		}
 
 		public static T GetOrDefault<T>() where T : class {
-			HashSet<RootObject> set;
+			HashSet<Actor> set;
 			if (_cacheDic.TryGetValue(typeof(T), out set) && set != null && set.Count > 0) {
-				foreach (RootObject r in set) {
+				foreach (Actor r in set) {
 					T casted = r as T;
 					if (casted != null) return casted;
 				}
@@ -161,9 +161,9 @@ namespace com.mutant.expansion
 
 		public static bool TryGet<T>(out T result) where T : class {
 			result = null;
-			HashSet<RootObject> set;
+			HashSet<Actor> set;
 			if (_cacheDic.TryGetValue(typeof(T), out set) && set != null && set.Count > 0) {
-				foreach (RootObject r in set) {
+				foreach (Actor r in set) {
 					T casted = r as T;
 					if (casted != null) {
 						result = casted;
@@ -179,9 +179,9 @@ namespace com.mutant.expansion
 		}
 
 		public static IEnumerable<T> GetEnumerable<T>() where T : class {
-			HashSet<RootObject> set;
+			HashSet<Actor> set;
 			if (_cacheDic.TryGetValue(typeof(T), out set) && set != null) {
-				foreach (RootObject r in set) {
+				foreach (Actor r in set) {
 					if (r != null) {
 						T casted = r as T;
 						if (casted != null) yield return casted;
@@ -230,33 +230,33 @@ namespace com.mutant.expansion
 			Unregister(this);
 		}
 
-		void Register(RootObject instance) {
+		void Register(Actor instance) {
 			Type instanceType = instance.GetType();
 			Type[] registerTypes = GetOrBuildTypeClosure(instanceType);
 
 			for (int i = 0; i < registerTypes.Length; i++) {
 				Type t = registerTypes[i];
 
-				if (_cacheDic.TryGetValue(t, out HashSet<RootObject> set) == false || set == null) {
-					set = new HashSet<RootObject>();
+				if (_cacheDic.TryGetValue(t, out HashSet<Actor> set) == false || set == null) {
+					set = new HashSet<Actor>();
 					_cacheDic[t] = set;
 				}
 				set.Add(instance);
 
 				// 구독자 알림
-				if (_eventDic.TryGetValue(t, out UnityEvent<RootObject> evt) && evt != null) {
+				if (_eventDic.TryGetValue(t, out UnityEvent<Actor> evt) && evt != null) {
 					evt.Invoke(instance);
 				}
 			}
 		}
 
-		void Unregister(RootObject instance) {
+		void Unregister(Actor instance) {
 			Type instanceType = instance.GetType();
 			Type[] registerTypes = GetOrBuildTypeClosure(instanceType);
 
 			for (int i = 0; i < registerTypes.Length; i++) {
 				Type t = registerTypes[i];
-				if (_cacheDic.TryGetValue(t, out HashSet<RootObject> set) && set != null) {
+				if (_cacheDic.TryGetValue(t, out HashSet<Actor> set) && set != null) {
 					set.Remove(instance);
 					if (set.Count == 0) {
 						_cacheDic.Remove(t);
