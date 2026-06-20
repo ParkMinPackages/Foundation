@@ -63,7 +63,6 @@ namespace com.mutant.expansion
 		}
 
 		protected virtual void OnTransformParentChanged() {
-			_isInit = false;
 			Init();
 		}
 
@@ -78,27 +77,23 @@ namespace com.mutant.expansion
 		// ===================== Internals =====================
 		T _parentNode;
 		HashSet<T> _childNodes = new HashSet<T>();
-		bool _isInit;
 
-		protected virtual void Init() {
-			if (_isInit) return;
-			_isInit = true;
-
+		void Init() {
 			if (_parentNode != null) {
 				_parentNode._childNodes.Remove((T)this);
 				_parentNode = null;
 			}
 
-			if (transform.parent == null) {
-				_isInit = true;
-				return;
+			if (transform.parent != null) {
+				_parentNode = transform.parent.GetComponentInParent<T>(true);
+
+				if (_parentNode != null) {
+					_parentNode._childNodes.Add((T)this);
+				}
 			}
 
-			_parentNode = transform.parent.GetComponentInParent<T>(true);
-
-			if (_parentNode != null) {
-				_parentNode._childNodes.Add((T)this);
-			}
+			OnTreeNodeInited();
 		}
+		protected virtual void OnTreeNodeInited() { }
 	}
 }
