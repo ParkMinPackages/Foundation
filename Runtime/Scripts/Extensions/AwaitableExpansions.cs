@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Threading;
 using UnityEngine;
 
-namespace com.parkminpackages.expansion.Extensions
+namespace com.parkminpackages.foundation.Extensions
 {
 	public static class AwaitableExpansions
 	{

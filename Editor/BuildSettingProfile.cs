@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEngine;
 
-namespace com.parkminpackages.expansion.Editor
+namespace com.parkminpackages.foundation.Editor
 {
 	[CreateAssetMenu(fileName = "BuildSettingProfile", menuName = nameof(parkminpackages) + "/BuildSettingProfile")]
 	public class BuildSettingProfile : ScriptableObject

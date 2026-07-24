@@ -1,5 +1,5 @@
 {
-  "name": "ParkMinPackages.Expansion",
+  "name": "ParkMinPackages.Foundation",
   "rootNamespace": "",
   "references": [
     "R3.Unity"

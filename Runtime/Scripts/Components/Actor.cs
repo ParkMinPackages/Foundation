@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using R3;
@@ -7,7 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
 
-namespace com.parkminpackages.expansion.Components
+namespace com.parkminpackages.foundation.Components
 {
 	[DisallowMultipleComponent]
 	[DefaultExecutionOrder(-10)]

@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using R3;
 using UnityEngine;
 
-namespace com.parkminpackages.expansion.Components
+namespace com.parkminpackages.foundation.Components
 {
 	public abstract class ExtendedBehaviour : MonoBehaviour
 	{

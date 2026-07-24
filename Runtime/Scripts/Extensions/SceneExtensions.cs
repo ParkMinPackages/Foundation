@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace com.parkminpackages.expansion.Extensions
+namespace com.parkminpackages.foundation.Extensions
 {
 	public static class SceneExtensions
 	{

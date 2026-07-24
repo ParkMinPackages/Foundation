@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-namespace com.parkminpackages.expansion.Extensions
+namespace com.parkminpackages.foundation.Extensions
 {
 	public static class GameObjectExtensions
 	{

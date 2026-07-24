@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace com.parkminpackages.expansion.Editor
+namespace com.parkminpackages.foundation.Editor
 {
 	public class SetIconWindow : EditorWindow
 	{

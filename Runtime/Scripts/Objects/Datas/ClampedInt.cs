@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace com.parkminpackages.expansion.Objects.Datas
+namespace com.parkminpackages.foundation.Objects.Datas
 {
 	[System.Serializable]
 	public class ClampedInt
