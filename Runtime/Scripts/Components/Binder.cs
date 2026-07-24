@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace com.parkminpackages.expansion
+namespace com.parkminpackages.expansion.Components
 {
 	public class Binder<T> : ExtendedBehaviour where T : class, INotifyPropertyChanged
 	{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace com.parkminpackages.expansion
+namespace com.parkminpackages.expansion.Components
 {
 	public abstract class Binding<T> : ExtendedBehaviour where T : class, INotifyPropertyChanged
 	{

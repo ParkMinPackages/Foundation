@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace com.parkminpackages.expansion
+namespace com.parkminpackages.expansion.Components
 {
 	public abstract class TreeNode<T> : ExtendedBehaviour where T : TreeNode<T>
 	{
