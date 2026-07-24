@@ -1,31 +1,33 @@
 ﻿using System.ComponentModel;
 
-namespace com.mutant.expansion
+namespace com.parkminpackages.expansion
 {
 	public class Binder<T> : ExtendedBehaviour where T : class, INotifyPropertyChanged
 	{
-		public void Bind(T value)
-		{
+		public void Bind(T value) {
 			_current = value;
 
-			foreach (Binding<T> binding in gameObject.GetComponentsInChildren<Binding<T>>(true))
-			{
+			foreach (Binding<T> binding in gameObject.GetComponentsInChildren<Binding<T>>(true)) {
 				binding.Bind(value);
 			}
 		}
 
-		public void Unbind()
-		{
+		public void Unbind() {
 			_current = default;
 
-			foreach (Binding<T> binding in gameObject.GetComponentsInChildren<Binding<T>>(true))
-			{
+			foreach (Binding<T> binding in gameObject.GetComponentsInChildren<Binding<T>>(true)) {
 				binding.Unbind();
 			}
 		}
 
-		public T Current => _current;
-		public bool IsBound => _current != null;
+		public T Current
+		{
+			get { return _current; }
+		}
+		public bool IsBound
+		{
+			get { return _current != null; }
+		}
 
 		T _current;
 	}

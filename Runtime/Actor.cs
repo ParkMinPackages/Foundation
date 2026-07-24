@@ -7,7 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
 
-namespace com.mutant.expansion
+namespace com.parkminpackages.expansion
 {
 	[DisallowMultipleComponent]
 	[DefaultExecutionOrder(-10)]

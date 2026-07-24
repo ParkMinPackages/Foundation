@@ -2,15 +2,14 @@
 using System.Threading;
 using UnityEngine;
 
-namespace com.mutant.expansion
+namespace com.parkminpackages.expansion
 {
 	public static class AwaitableExpansions
 	{
-		public static async Awaitable Run(Func<Awaitable> asyncFunc)
-		{
+		public static async Awaitable Run(Func<Awaitable> asyncFunc) {
 			await asyncFunc();
 		}
-		
+
 		public static async Awaitable WaitUntil(Func<bool> predicate, CancellationToken cancellationToken) {
 			// 조건을 만족할 때까지 매 프레임 검사
 			while (!predicate()) {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace com.mutant.expansion.Extensions
+namespace com.parkminpackages.expansion.Extensions
 {
 	public static class ComponentExtensions
 	{

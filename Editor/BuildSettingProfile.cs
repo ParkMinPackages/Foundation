@@ -4,9 +4,9 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEngine;
 
-namespace com.mutant.expansion.Editor
+namespace com.parkminpackages.expansion.Editor
 {
-	[CreateAssetMenu(fileName = "BuildSettingProfile", menuName = nameof(mutant) + "/BuildSettingProfile")]
+	[CreateAssetMenu(fileName = "BuildSettingProfile", menuName = nameof(parkminpackages) + "/BuildSettingProfile")]
 	public class BuildSettingProfile : ScriptableObject
 	{
 		#region Public - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

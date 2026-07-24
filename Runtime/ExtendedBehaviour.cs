@@ -3,7 +3,7 @@ using System.Linq;
 using R3;
 using UnityEngine;
 
-namespace com.mutant.expansion
+namespace com.parkminpackages.expansion
 {
 	public abstract class ExtendedBehaviour : MonoBehaviour
 	{

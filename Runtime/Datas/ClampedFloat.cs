@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace com.mutant.expansion.Datas
+namespace com.parkminpackages.expansion.Datas
 {
 	[System.Serializable]
 	public struct ClampedFloat
@@ -42,10 +42,19 @@ namespace com.mutant.expansion.Datas
 			}
 		}
 
-		public float Normalized => Mathf.Abs(_max - _min) < 0.0001f ? 0f : (_current - _min) / (_max - _min);
+		public float Normalized
+		{
+			get { return Mathf.Abs(_max - _min) < 0.0001f ? 0f : (_current - _min) / (_max - _min); }
+		}
 
-		public bool IsFull => Current >= Max;
-		public bool IsEmpty => Current <= _min;
+		public bool IsFull
+		{
+			get { return Current >= Max; }
+		}
+		public bool IsEmpty
+		{
+			get { return Current <= _min; }
+		}
 
 		[SerializeField] float _current;
 		[SerializeField] float _min;

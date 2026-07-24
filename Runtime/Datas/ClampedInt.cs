@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace com.mutant.expansion.Datas
+namespace com.parkminpackages.expansion.Datas
 {
 	[System.Serializable]
 	public class ClampedInt
@@ -20,7 +20,7 @@ namespace com.mutant.expansion.Datas
 
 		public int Current
 		{
-			get => _current;
+			get { return _current; }
 			set
 			{
 				_current = value;
@@ -30,7 +30,7 @@ namespace com.mutant.expansion.Datas
 
 		public int Max
 		{
-			get => _max;
+			get { return _max; }
 			set
 			{
 				_max = value;
@@ -40,7 +40,7 @@ namespace com.mutant.expansion.Datas
 
 		public int Min
 		{
-			get => _min;
+			get { return _min; }
 			set
 			{
 				_min = value;
@@ -48,10 +48,19 @@ namespace com.mutant.expansion.Datas
 			}
 		}
 
-		public float Normalized => Mathf.Abs(_max - _min) < 0.0001f ? 0f : (_current - _min) / (float)(_max - _min);
+		public float Normalized
+		{
+			get { return Mathf.Abs(_max - _min) < 0.0001f ? 0f : (_current - _min) / (float)(_max - _min); }
+		}
 
-		public bool IsFull => _current >= _max;
-		public bool IsEmpty => _current <= _min;
+		public bool IsFull
+		{
+			get { return _current >= _max; }
+		}
+		public bool IsEmpty
+		{
+			get { return _current <= _min; }
+		}
 
 		[SerializeField] int _current;
 		[SerializeField] int _min;

@@ -2,12 +2,12 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace com.mutant.expansion.Editor
+namespace com.parkminpackages.expansion.Editor
 {
 	public class SetIconWindow : EditorWindow
 	{
 		#region 메뉴
-		const string _menuPath = "Assets/" + nameof(mutant) + "/스크립트 아이콘 변경";
+		const string _menuPath = "Assets/" + nameof(parkminpackages) + "/스크립트 아이콘 변경";
 
 		[MenuItem(_menuPath, priority = -100)]
 		public static void ShowMenuItem() {
