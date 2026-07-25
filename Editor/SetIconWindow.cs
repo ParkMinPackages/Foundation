@@ -1,101 +1,165 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
-namespace com.parkminpackages.foundation.Editor
+namespace ParkMinPackages.Foundation.Editor
 {
-	public class SetIconWindow : EditorWindow
+	public sealed class SetIconWindow : EditorWindow
 	{
-		#region 메뉴
-		const string _menuPath = "Assets/" + nameof(parkminpackages) + "/스크립트 아이콘 변경";
+		const string MenuPath = "Assets/" + nameof(ParkMinPackages) + "/스크립트 아이콘 변경";
+		const float CellSize = 72f;
+		const float WindowPadding = 20f;
 
-		[MenuItem(_menuPath, priority = -100)]
+		readonly List<Texture2D> icons = new List<Texture2D>();
+		readonly List<GUIContent> iconContents = new List<GUIContent>();
+
+		Vector2 scrollPosition;
+		int selectedIconIndex;
+		GUIStyle iconStyle;
+
+		[MenuItem(MenuPath, priority = -100)]
 		public static void ShowMenuItem() {
-			SetIconWindow window = (SetIconWindow)EditorWindow.GetWindow(typeof(SetIconWindow));
-			window.titleContent = new GUIContent("Set Icon");
+			SetIconWindow window = GetWindow<SetIconWindow>();
+			window.titleContent = new GUIContent("Set Script Icon");
+			window.minSize = new Vector2(250f, 180f);
 			window.Show();
 		}
 
-		[MenuItem(_menuPath, validate = true)]
+		[MenuItem(MenuPath, validate = true)]
 		public static bool ValidateShowMenuItem() {
-			foreach (Object asset in Selection.objects) {
-				if (asset.GetType() != typeof(MonoScript))
-					return false;
-			}
-			return true;
+			return HasOnlyMonoScriptsSelected();
 		}
-		#endregion
 
 		void OnEnable() {
-			GetIcons();
-			_scroll = new Vector2();
-			_selectedIcon = 0;
+			RefreshIcons();
+			scrollPosition = Vector2.zero;
+			selectedIconIndex = 0;
 		}
-		void OnDisable() {
-			_icons.Clear();
+
+		void OnSelectionChange() {
+			Repaint();
 		}
+
 		void OnGUI() {
-			SetDesign();
+			EnsureStyles();
 
-			bool isApply = GUILayout.Button("Apply", GUILayout.Width(100));
-			_scroll = GUILayout.BeginScrollView(_scroll);
-			_selectedIcon = GUILayout.SelectionGrid(
-				_selectedIcon,
-				_icons.ToArray(),
-				_gridCellCount,
-				_guiStyle,
-				GUILayout.Width(_gridCellWidth), GUILayout.Height(_gridCellHeight)
-			);
-			GUILayout.EndScrollView();
+			EditorGUILayout.LabelField($"Selected scripts: {Selection.objects.Length}");
+			EditorGUILayout.Space(4f);
 
-			if (isApply) {
-				ApplyIcon(_icons[_selectedIcon]);
-				Close();
+			using (new EditorGUILayout.HorizontalScope()) {
+				using (new EditorGUI.DisabledScope(!HasOnlyMonoScriptsSelected() || icons.Count == 0)) {
+					if (GUILayout.Button("Apply", GUILayout.Height(24f))) {
+						ApplySelectedIcon();
+						Close();
+						GUIUtility.ExitGUI();
+					}
+				}
+
+				if (GUILayout.Button("Refresh", GUILayout.Width(80f), GUILayout.Height(24f))) {
+					RefreshIcons();
+				}
 			}
+
+			EditorGUILayout.Space(4f);
+
+			if (icons.Count == 0) {
+				EditorGUILayout.HelpBox("No script icons were found.", MessageType.Info);
+				return;
+			}
+
+			int columnCount = Mathf.Max(1, Mathf.FloorToInt((position.width - WindowPadding) / CellSize));
+			int rowCount = Mathf.CeilToInt((float)icons.Count / columnCount);
+
+			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
+			selectedIconIndex = GUILayout.SelectionGrid(
+				Mathf.Clamp(selectedIconIndex, 0, icons.Count - 1),
+				iconContents.ToArray(),
+				columnCount,
+				iconStyle,
+				GUILayout.Height(rowCount * CellSize)
+			);
+			EditorGUILayout.EndScrollView();
 		}
 
-		List<Texture2D> _icons;
+		void RefreshIcons() {
+			icons.Clear();
+			iconContents.Clear();
 
-		//디자인
-		int _gridCellCount;
-		int _gridCellSize;
-		int _gridCellWidth;
-		int _gridCellHeight;
-		GUIStyle _guiStyle;
+			icons.Add(null);
+			iconContents.Add(new GUIContent("None", "Remove the custom script icon"));
 
-		//레이아웃
-		Vector2 _scroll;
-		int _selectedIcon;
+			string[] assetGuids = AssetDatabase.FindAssets("t:Texture2D l:ScriptIcon");
+			Array.Sort(assetGuids, StringComparer.Ordinal);
 
-		void GetIcons() {
-			_icons = new List<Texture2D>();
-			_icons.Add(null);
-
-			string[] assetGuids = AssetDatabase.FindAssets("t:texture2d l:ScriptIcon");
 			foreach (string assetGuid in assetGuids) {
 				string path = AssetDatabase.GUIDToAssetPath(assetGuid);
-				_icons.Add(AssetDatabase.LoadAssetAtPath<Texture2D>(path));
+				Texture2D icon = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+				if (icon == null || icons.Contains(icon))
+					continue;
+
+				icons.Add(icon);
+				iconContents.Add(new GUIContent(icon, icon.name));
 			}
+
+			selectedIconIndex = Mathf.Clamp(selectedIconIndex, 0, icons.Count - 1);
+			Repaint();
 		}
-		void SetDesign() {
-			_gridCellCount = 12;
-			_gridCellSize = 70;
-			_gridCellWidth = _icons.Count <= _gridCellCount ? _icons.Count * _gridCellSize : _gridCellCount * _gridCellSize;
-			_gridCellHeight = (_icons.Count / _gridCellCount + (_icons.Count % _gridCellCount == 0 ? 0 : 1)) * _gridCellSize;
-			_guiStyle = new GUIStyle(GUI.skin.button);
-			_guiStyle.fixedWidth = _gridCellSize;
-			_guiStyle.fixedHeight = _gridCellSize;
+
+		void EnsureStyles() {
+			if (iconStyle != null)
+				return;
+
+			iconStyle = new GUIStyle(GUI.skin.button)
+			{
+				fixedWidth = CellSize,
+				fixedHeight = CellSize,
+				imagePosition = ImagePosition.ImageAbove
+			};
 		}
-		void ApplyIcon(Texture2D icon) {
-			AssetDatabase.StartAssetEditing();
+
+		void ApplySelectedIcon() {
+			if (!HasOnlyMonoScriptsSelected() || icons.Count == 0)
+				return;
+
+			Texture2D icon = icons[Mathf.Clamp(selectedIconIndex, 0, icons.Count - 1)];
+
 			foreach (Object asset in Selection.objects) {
 				string path = AssetDatabase.GetAssetPath(asset);
-				MonoImporter monoImporter = AssetImporter.GetAtPath(path) as MonoImporter;
-				monoImporter.SetIcon(icon);
-				AssetDatabase.ImportAsset(path);
+				MonoImporter importer = AssetImporter.GetAtPath(path) as MonoImporter;
+				if (importer == null) {
+					Debug.LogWarning($"Could not load MonoImporter for {path}", asset);
+					continue;
+				}
+
+				try {
+					importer.SetIcon(icon);
+					importer.SaveAndReimport();
+				}
+				catch (Exception exception) {
+					Debug.LogError($"Failed to set the script icon for {path}:\n{exception}", asset);
+				}
 			}
-			AssetDatabase.StopAssetEditing();
+
 			AssetDatabase.Refresh();
+		}
+
+		static bool HasOnlyMonoScriptsSelected() {
+			Object[] selectedAssets = Selection.objects;
+			if (selectedAssets == null || selectedAssets.Length == 0)
+				return false;
+
+			foreach (Object asset in selectedAssets) {
+				if (asset is not MonoScript)
+					return false;
+
+				string path = AssetDatabase.GetAssetPath(asset);
+				if (AssetImporter.GetAtPath(path) is not MonoImporter)
+					return false;
+			}
+
+			return true;
 		}
 	}
 }

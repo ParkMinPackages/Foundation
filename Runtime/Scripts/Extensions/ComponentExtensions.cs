@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace com.parkminpackages.foundation.Extensions
+namespace ParkMinPackages.Foundation.Extensions
 {
 	public static class ComponentExtensions
 	{

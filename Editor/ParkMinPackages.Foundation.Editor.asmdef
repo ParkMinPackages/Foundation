@@ -1,10 +1,12 @@
 {
-  "name": "ParkMinPackages.Foundation",
-  "rootNamespace": "ParkMinPackages.Foundation",
+  "name": "ParkMinPackages.Foundation.Editor",
+  "rootNamespace": "ParkMinPackages.Foundation.Editor",
   "references": [
-    "R3.Unity"
+    "GUID:71a72178c26810b4fb6e1516407e5558"
   ],
-  "includePlatforms": [],
+  "includePlatforms": [
+    "Editor"
+  ],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,

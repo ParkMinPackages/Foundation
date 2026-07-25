@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace com.parkminpackages.foundation.Objects.Datas
+namespace ParkMinPackages.Foundation.Objects.Datas
 {
 	[System.Serializable]
 	public struct ClampedFloat

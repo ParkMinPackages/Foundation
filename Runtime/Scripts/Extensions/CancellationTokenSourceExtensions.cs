@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace com.parkminpackages.foundation.Extensions
+namespace ParkMinPackages.Foundation.Extensions
 {
 	public static class CancellationTokenSourceExtensions
 	{

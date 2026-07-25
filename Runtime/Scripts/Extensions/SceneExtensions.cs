@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace com.parkminpackages.foundation.Extensions
+namespace ParkMinPackages.Foundation.Extensions
 {
 	public static class SceneExtensions
 	{
