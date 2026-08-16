@@ -5,14 +5,12 @@
   "documentationUrl": "https://github.com/ParkMinPackages/Foundation#readme",
   "changelogUrl": "https://github.com/ParkMinPackages/Foundation/blob/main/CHANGELOG.md",
   "licensesUrl": "https://github.com/ParkMinPackages/Foundation/blob/main/LICENSE.md",
-  "version": "5.4.0",
+  "version": "5.4.1",
   "unity": "6000.5",
   "description": "Unity package maintained by ParkMinPackages.",
   "author": {
     "name": "ParkMinPackages",
     "url": "https://github.com/ParkMinPackages"
   },
-  "dependencies": {
-    "com.cysharp.r3": "1.3.0"
-  }
+  "dependencies": {}
 }
