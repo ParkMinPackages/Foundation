@@ -4,10 +4,10 @@ using ParkMinPackages.Foundation.Extensions;
 
 namespace ParkMinPackages.Foundation.Objects.Threading
 {
-	public sealed class LatestOperationCancellationTokenSource : IDisposable
+	public sealed class AutoRenewCancellationTokenSource : IDisposable
 	{
 		// - Public Methods -
-		public CancellationToken CreateToken(
+		public CancellationToken CancelPreviousAndCreateToken(
 			CancellationToken cancellationToken = default
 		) {
 			CancellationTokenSource nextCancellationTokenSource = cancellationToken.CanBeCanceled
@@ -19,7 +19,7 @@ namespace ParkMinPackages.Foundation.Objects.Threading
 			lock (_gate) {
 				if (_isDisposed) {
 					nextCancellationTokenSource.Dispose();
-					throw new ObjectDisposedException(nameof(LatestOperationCancellationTokenSource));
+					throw new ObjectDisposedException(nameof(AutoRenewCancellationTokenSource));
 				}
 				previousCancellationTokenSource = _cancellationTokenSource;
 				_cancellationTokenSource = nextCancellationTokenSource;
@@ -34,7 +34,7 @@ namespace ParkMinPackages.Foundation.Objects.Threading
 
 			lock (_gate) {
 				if (_isDisposed) {
-					throw new ObjectDisposedException(nameof(LatestOperationCancellationTokenSource));
+					throw new ObjectDisposedException(nameof(AutoRenewCancellationTokenSource));
 				}
 				cancellationTokenSource = _cancellationTokenSource;
 				_cancellationTokenSource = null;
