@@ -2,17 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using UnityEditor;
-#endif
 using Sirenix.OdinInspector;
-using UnityEngine;
+using UnityEditor;
 using UnityEngine.Serialization;
+#endif
+using UnityEngine;
 
-namespace UnnamedTeam.UnamedParkGolf.General.Components
+namespace ParkMinPackages.Foundation.Components.Helpers
 {
 	[ExecuteAlways]
 	[DisallowMultipleComponent]
-	public sealed class HierarchyManager : MonoBehaviour
+	public sealed class HierarchyHelper : MonoBehaviour
 	{
 #if UNITY_EDITOR
 		// - Class Struct Enum -
@@ -20,7 +20,7 @@ namespace UnnamedTeam.UnamedParkGolf.General.Components
 		public sealed class HierarchyExpansionController
 		{
 			// - Public Methods -
-			public void Initialize(HierarchyManager owner) {
+			public void Initialize(HierarchyHelper owner) {
 				_owner = owner;
 			}
 			public void ApplyOnceDelayed() {
@@ -40,7 +40,7 @@ namespace UnnamedTeam.UnamedParkGolf.General.Components
 			[SerializeField] bool _enabled;
 			[SerializeField, ShowIf(nameof(_enabled))] Transform _targetChild;
 			[SerializeField, ShowIf(nameof(_enabled)), LabelText("씬 진입 시 자동 적용"), FormerlySerializedAs("_autoExpand")] bool _applyOnSceneOpen;
-			[NonSerialized] HierarchyManager _owner;
+			[NonSerialized] HierarchyHelper _owner;
 
 			[Button("지정 자식만 펼치기"), ShowIf(nameof(_enabled))]
 			void ExpandOnlyTargetChild() {
@@ -60,7 +60,7 @@ namespace UnnamedTeam.UnamedParkGolf.General.Components
 
 			void ApplyHierarchyState(bool selectTarget) {
 				if (!IsTargetValid()) {
-					Debug.LogError("지정한 오브젝트는 HierarchyManager가 붙은 오브젝트의 자식이어야 합니다.", _owner);
+					Debug.LogError("지정한 오브젝트는 HierarchyHelper가 붙은 오브젝트의 자식이어야 합니다.", _owner);
 					return;
 				}
 
