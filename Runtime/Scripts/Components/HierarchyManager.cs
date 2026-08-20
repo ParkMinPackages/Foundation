@@ -6,6 +6,7 @@ using UnityEditor;
 #endif
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UnnamedTeam.UnamedParkGolf.General.Components
 {
@@ -18,37 +19,39 @@ namespace UnnamedTeam.UnamedParkGolf.General.Components
 		[Serializable]
 		public sealed class HierarchyExpansionController
 		{
-			// - Statics -
-			const double AutoExpandInterval = 0.2d;
-
 			// - Public Methods -
 			public void Initialize(HierarchyManager owner) {
 				_owner = owner;
 			}
-			public void Release() {
-				_owner = null;
-			}
-			public void Tick(double currentTime) {
-				if (!_autoExpand || _owner == null || currentTime < _nextAutoExpandTime) {
+			public void ApplyOnceDelayed() {
+				if (!_enabled || _owner == null) {
 					return;
 				}
 
-				_nextAutoExpandTime = currentTime + AutoExpandInterval;
-				if (!IsTargetValid()) {
-					return;
-				}
-				ApplyHierarchyState(false);
+				EditorApplication.delayCall -= ApplyOnce;
+				EditorApplication.delayCall += ApplyOnce;
+			}
+			public void Release() {
+				EditorApplication.delayCall -= ApplyOnce;
+				_owner = null;
 			}
 
 			// - Internals -
-			[SerializeField] Transform _targetChild;
-			[SerializeField, LabelText("자동 적용")] bool _autoExpand;
+			[SerializeField] bool _enabled;
+			[SerializeField, ShowIf(nameof(_enabled))] Transform _targetChild;
+			[SerializeField, ShowIf(nameof(_enabled)), LabelText("씬 진입 시 자동 적용"), FormerlySerializedAs("_autoExpand")] bool _applyOnSceneOpen;
 			[NonSerialized] HierarchyManager _owner;
-			double _nextAutoExpandTime;
 
-			[Button("지정 자식만 펼치기")]
+			[Button("지정 자식만 펼치기"), ShowIf(nameof(_enabled))]
 			void ExpandOnlyTargetChild() {
 				ApplyHierarchyState(true);
+			}
+
+			void ApplyOnce() {
+				EditorApplication.delayCall -= ApplyOnce;
+				if (_applyOnSceneOpen && IsTargetValid()) {
+					ApplyHierarchyState(false);
+				}
 			}
 
 			bool IsTargetValid() {
@@ -100,19 +103,30 @@ namespace UnnamedTeam.UnamedParkGolf.General.Components
 		{
 			// - Public Methods -
 			public void Apply(GameObject target) {
+				if (!_enabled) {
+					if (_wasApplied) {
+						Restore(target);
+					}
+					return;
+				}
+
 				SetSceneVisibility(target, _sceneVisibility, true);
 				SetScenePicking(target, _scenePicking, true);
 				EditorApplication.RepaintHierarchyWindow();
+				_wasApplied = true;
 			}
 			public void Restore(GameObject target) {
 				SetSceneVisibility(target, true, true);
 				SetScenePicking(target, true, true);
 				EditorApplication.RepaintHierarchyWindow();
+				_wasApplied = false;
 			}
 
 			// - Internals -
-			[SerializeField] bool _sceneVisibility = true;
-			[SerializeField] bool _scenePicking = true;
+			[SerializeField] bool _enabled;
+			[SerializeField, ShowIf(nameof(_enabled))] bool _sceneVisibility = true;
+			[SerializeField, ShowIf(nameof(_enabled))] bool _scenePicking = true;
+			[NonSerialized] bool _wasApplied;
 
 			void SetSceneVisibility(GameObject target, bool visible, bool includeDescendants) {
 				SceneVisibilityManager manager = SceneVisibilityManager.instance;
@@ -138,6 +152,7 @@ namespace UnnamedTeam.UnamedParkGolf.General.Components
 		// - Handler -
 		void OnEnable() {
 			_hierarchyExpansionController.Initialize(this);
+			_hierarchyExpansionController.ApplyOnceDelayed();
 			_sceneVisibilityController.Apply(gameObject);
 			EditorApplication.update -= HandleEditorUpdate;
 			EditorApplication.update += HandleEditorUpdate;
@@ -161,15 +176,14 @@ namespace UnnamedTeam.UnamedParkGolf.General.Components
 		}
 
 		// - Internals -
-		[SerializeField, BoxGroup("Hierarchy Expansion"), HideLabel] HierarchyExpansionController _hierarchyExpansionController = new HierarchyExpansionController();
-		[SerializeField, BoxGroup("Scene Visibility"), HideLabel] SceneVisibilityController _sceneVisibilityController = new SceneVisibilityController();
+		[SerializeField] HierarchyExpansionController _hierarchyExpansionController = new HierarchyExpansionController();
+		[SerializeField] SceneVisibilityController _sceneVisibilityController = new SceneVisibilityController();
 
 		void HandleEditorUpdate() {
 			if (Application.isPlaying) {
 				return;
 			}
 
-			_hierarchyExpansionController.Tick(EditorApplication.timeSinceStartup);
 			_sceneVisibilityController.Apply(gameObject);
 		}
 #endif
